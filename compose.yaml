@@ -1,0 +1,51 @@
+services:
+  shinkaimon-hub:
+    image: polylvst/shinkaimon-hub-anshar:latest
+    container_name: shinkaimon-hub-anshar
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://shinkaimon:shinkaimon@hub-db:5432/shinkaimon_hub
+      # Warning changing these require full refresh face embeddings
+      # You can do this by thrashing all user then re upload users
+      # ~ PolyLvst
+      - FACE_MODEL_NAME=ArcFace
+      - FACE_BACKEND_NAME=opencv
+      - FACE_DISTANCE_METRIC=cosine
+    restart: unless-stopped
+    volumes:
+      - ./.deepface:/root/.deepface
+    depends_on:
+      hub-db:
+        condition: service_healthy
+
+  shinkaimon-hub-fe:
+    image: polylvst/shinkaimon-hub-fe-anshar:latest
+    container_name: shinkaimon-hub-fe-anshar
+    ports:
+      - "3001:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - shinkaimon-hub
+    restart: unless-stopped
+
+  hub-db:
+    image: pgvector/pgvector:pg16
+    container_name: hub-db-anshar
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=shinkaimon
+      - POSTGRES_PASSWORD=shinkaimon
+      - POSTGRES_DB=shinkaimon_hub
+    volumes:
+      - hub_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shinkaimon -d shinkaimon_hub"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  hub_pgdata:
