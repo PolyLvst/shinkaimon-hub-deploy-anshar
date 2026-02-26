@@ -1,11 +1,11 @@
 services:
-  shinkaimon-hub:
+  shinkaimon-hub-anshar:
     image: polylvst/shinkaimon-hub-anshar:latest
     container_name: shinkaimon-hub-anshar
     ports:
       - "8001:8001"
     environment:
-      - DATABASE_URL=postgresql://shinkaimon:shinkaimon@hub-db:5432/shinkaimon_hub
+      - DATABASE_URL=postgresql://shinkaimon:shinkaimon@hub-db-anshar:5432/shinkaimon_hub
       # Warning changing these require full refresh face embeddings
       # You can do this by thrashing all user then re upload users
       # ~ PolyLvst
@@ -16,10 +16,10 @@ services:
     volumes:
       - ./.deepface:/root/.deepface
     depends_on:
-      hub-db:
+      hub-db-anshar:
         condition: service_healthy
 
-  shinkaimon-hub-fe:
+  shinkaimon-hub-fe-anshar:
     image: polylvst/shinkaimon-hub-fe-anshar:latest
     container_name: shinkaimon-hub-fe-anshar
     ports:
@@ -27,10 +27,10 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
-      - shinkaimon-hub
+      - shinkaimon-hub-anshar
     restart: unless-stopped
 
-  hub-db:
+  hub-db-anshar:
     image: pgvector/pgvector:pg16
     container_name: hub-db-anshar
     ports:
