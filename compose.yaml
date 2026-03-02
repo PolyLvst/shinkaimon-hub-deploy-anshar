@@ -24,6 +24,8 @@ services:
     container_name: shinkaimon-hub-fe-anshar
     ports:
       - "3001:80"
+    environment:
+      - BACKEND_PORT=8001
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
