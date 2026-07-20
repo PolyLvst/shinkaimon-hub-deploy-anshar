@@ -12,6 +12,20 @@ services:
       - FACE_MODEL_NAME=ArcFace
       - FACE_BACKEND_NAME=opencv
       - FACE_DISTANCE_METRIC=cosine
+      # Attendance forwarding to erina + the WhatsApp gateway. Off unless you
+      # set FORWARD_ENABLED=true in .env; see .env.example for the whole block.
+      - FORWARD_ENABLED=${FORWARD_ENABLED:-false}
+      - FORWARD_INTERVAL_SECONDS=${FORWARD_INTERVAL_SECONDS:-30}
+      - FORWARD_BATCH_SIZE=${FORWARD_BATCH_SIZE:-50}
+      - FORWARD_MAX_ATTEMPTS=${FORWARD_MAX_ATTEMPTS:-10}
+      - FORWARD_MAX_AGE_HOURS=${FORWARD_MAX_AGE_HOURS:-72}
+      - ERINA_BASE_URL=${ERINA_BASE_URL:-}
+      - ERINA_APP_CLIENT=${ERINA_APP_CLIENT:-erina-admin}
+      - ERINA_ATTENDANCE_TIPE=${ERINA_ATTENDANCE_TIPE:-HADIR}
+      - ERINA_CACHE_TTL_HOURS=${ERINA_CACHE_TTL_HOURS:-12}
+      - WA_BASE_URL=${WA_BASE_URL:-}
+      - WA_USERNAME=${WA_USERNAME:-}
+      - WA_PASSWORD=${WA_PASSWORD:-}
     restart: unless-stopped
     volumes:
       - ./.deepface:/root/.deepface
