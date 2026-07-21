@@ -3,14 +3,14 @@ services:
     image: polylvst/shinkaimon-hub-anshar:latest
     container_name: shinkaimon-hub-anshar
     ports:
-      - "8001:8001"
+      - "8010:8001"
     environment:
       - DATABASE_URL=postgresql://shinkaimon:shinkaimon@hub-db-anshar:5432/shinkaimon_hub
       # Warning changing these require full refresh face embeddings
       # You can do this by thrashing all user then re upload users
       # ~ PolyLvst
       - FACE_MODEL_NAME=ArcFace
-      - FACE_BACKEND_NAME=opencv
+      - FACE_BACKEND_NAME=mtcnn
       - FACE_DISTANCE_METRIC=cosine
       # Attendance forwarding to erina + the WhatsApp gateway. Off unless you
       # set FORWARD_ENABLED=true in .env; see .env.example for the whole block.
@@ -39,7 +39,7 @@ services:
     ports:
       - "3001:80"
     environment:
-      - BACKEND_PORT=8001
+      - BACKEND_PORT=8010
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
