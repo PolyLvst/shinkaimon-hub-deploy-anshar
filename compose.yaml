@@ -55,6 +55,7 @@ services:
       - POSTGRES_USER=shinkaimon
       - POSTGRES_PASSWORD=shinkaimon
       - POSTGRES_DB=shinkaimon_hub
+    restart: unless-stopped
     volumes:
       - hub_pgdata:/var/lib/postgresql/data
     healthcheck:
